@@ -38,19 +38,51 @@ const handleSymbol = (value) => {
             }
             flushOperation(parseInt(buffer))
             previousOperator = null
-            buffer = "" + total // keeping it a string
+            buffer = "" + total 
             total = 0
             break
         case '←':
             if (buffer.length === 1) {
-                buffer = 0
+                buffer = "0"
             } else {
                 buffer = buffer.substring(0, buffer.length - 1)
             }
             break
-        default:
+        case "+":
+        case "-":
+        case "*":
+        case "÷":
             handleMath(value)
             break
+    }
+}
+
+const handleMath = (value) => {
+    if (buffer === "0") {
+        return
+    }
+
+    const intBuffer = parseInt(buffer)
+    if (total === 0) {
+        total = intBuffer
+    } else {
+        flushOperation(intBuffer)
+    }
+
+    previousOperator = value
+
+    buffer = "0"
+}
+
+const flushOperation = (intBuffer) => {
+    if (previousOperator === "+") {
+        total += intBuffer
+    } else if (previousOperator === "-") {
+        total -= intBuffer
+    } else if (previousOperator === "*") {
+        total *= intBuffer
+    } else {
+        total /= intBuffer
     }
 }
 
